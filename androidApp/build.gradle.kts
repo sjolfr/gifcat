@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "uk.co.gifcat.android"
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "uk.co.gifcat.android"
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
@@ -18,6 +18,9 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.3.0"
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
     packagingOptions {
         resources {
@@ -32,11 +35,16 @@ android {
 }
 
 dependencies {
+    val jetpackComposeVersion = "1.2.1"
+    val material3Version = "1.0.0-beta03"
+
     implementation(project(":shared"))
-    implementation("androidx.compose.ui:ui:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
-    implementation("androidx.compose.foundation:foundation:1.2.1")
-    implementation("androidx.compose.material:material:1.2.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
+    implementation("androidx.compose.ui:ui:$jetpackComposeVersion")
+    implementation("androidx.compose.ui:ui-tooling:$jetpackComposeVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$jetpackComposeVersion")
+    implementation("androidx.compose.foundation:foundation:$jetpackComposeVersion")
+    implementation("androidx.compose.material3:material3:$material3Version")
+    implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
+    implementation("androidx.activity:activity-compose:1.6.0")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:1.0.0-alpha-04")
 }

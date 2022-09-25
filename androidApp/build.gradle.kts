@@ -37,6 +37,8 @@ android {
 dependencies {
     val jetpackComposeVersion = "1.2.1"
     val material3Version = "1.0.0-beta03"
+    val accompanistVersion = "0.25.1"
+    val landscapistVersion = "2.0.0"
 
     implementation(project(":shared"))
     implementation("androidx.compose.ui:ui:$jetpackComposeVersion")
@@ -47,4 +49,9 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     implementation("androidx.activity:activity-compose:1.6.0")
     implementation("com.arkivanov.decompose:extensions-compose-jetpack:1.0.0-alpha-04")
+    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
+    implementation("com.github.skydoves:landscapist-coil:$landscapistVersion")
+    implementation("com.github.skydoves:landscapist-placeholder:$landscapistVersion")
+    implementation("com.github.skydoves:landscapist-animation:$landscapistVersion")
+
 }

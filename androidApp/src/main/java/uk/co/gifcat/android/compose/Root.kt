@@ -51,7 +51,8 @@ fun RootContent(root: Root, modifier: Modifier = Modifier) {
                 .padding(innerPadding)
         ) {
             when (val child = it.instance) {
-                is Root.Child.CatListChild -> BreedsContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is Root.Child.BreedListChild -> BreedsContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is Root.Child.ImageGalleryChild -> ImageGallery(component = child.component, modifier = Modifier.fillMaxSize())
             }
         }
     }
@@ -65,7 +66,7 @@ fun RootContentPreview() {
             MutableValue(
                 ChildStack(
                     configuration = Unit,
-                    instance = Root.Child.CatListChild(fakeBreedsComponent),
+                    instance = Root.Child.BreedListChild(fakeBreedsComponent),
                 )
             )
     }

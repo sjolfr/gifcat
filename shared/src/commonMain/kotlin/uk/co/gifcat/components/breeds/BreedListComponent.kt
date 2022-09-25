@@ -12,7 +12,8 @@ import uk.co.gifcat.api.CatsApi
 import uk.co.gifcat.extensions.coroutineScope
 
 internal class BreedListComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    private val onBreeItemSelected: (BreedItem) -> Unit
 ) : BreedList, ComponentContext by componentContext {
     private val _value = MutableValue(BreedsModel())
     override val model: Value<BreedsModel> = _value
@@ -36,7 +37,7 @@ internal class BreedListComponent(
         val apiBreeds = CatsApi.getBreeds(limit, page)
 
         val mappedBreeds = apiBreeds.map {
-            BreedItem(it.name, it.origin, it.image.url, it.temperament)
+            BreedItem(it.name, it.origin, it.image.url, it.temperament, it.id)
         }
 
         if (mappedBreeds.isNotEmpty()) {
@@ -53,9 +54,7 @@ internal class BreedListComponent(
         }
     }
 
-    override suspend fun onBreedSelected(breed: BreedItem) {
-        TODO("navigate to breed component")
-    }
+    override suspend fun onBreedSelected(breed: BreedItem) = onBreeItemSelected(breed)
 
     override suspend fun loadMore() = loadCats()
 }

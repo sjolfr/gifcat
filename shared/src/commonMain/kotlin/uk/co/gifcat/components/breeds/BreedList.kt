@@ -23,4 +23,10 @@ data class BreedsModel(
     }
 }
 
-data class BreedItem(val name: String, val origin: String, val imageUrl: String, val temperament: String)
+data class BreedItem(
+    val name: String,
+    val origin: String,
+    val imageUrl: String,
+    val temperament: String,
+    internal val id: String
+)

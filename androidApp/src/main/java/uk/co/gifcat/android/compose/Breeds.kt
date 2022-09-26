@@ -60,7 +60,6 @@ fun BreedsContent(component: BreedList, modifier: Modifier) {
             CenterAlignedTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = {
-//                    Image(painterResource(id = R.mipmap.ic_launcher), contentDescription = "app logo")
                     Text(
                         stringResource(R.string.app_name),
                         maxLines = 1,

@@ -1,7 +1,5 @@
 package uk.co.gifcat.android.compose
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +49,7 @@ import uk.co.gifcat.components.breeds.BreedsModel
 fun BreedsContent(component: BreedList, modifier: Modifier) {
     val model by component.model.subscribeAsState()
     val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -69,7 +66,7 @@ fun BreedsContent(component: BreedList, modifier: Modifier) {
             )
         },
     ) { innerPadding ->
-        Column(modifier = modifier
+        Column(modifier = Modifier
             .padding(innerPadding)
             .verticalScroll(rememberScrollState())
         ) {

@@ -33,9 +33,9 @@ import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.reduce
 import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.animation.circular.CircularRevealPlugin
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import uk.co.gifcat.android.R
@@ -112,12 +112,6 @@ fun BreedRow(breed: BreedItem, onClick: () -> Unit) {
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
-            component = rememberImageComponent {
-                +ShimmerPlugin(
-                    baseColor = Color.DarkGray,
-                    highlightColor = Color.LightGray,
-                )
-            },
         )
         Text(
             breed.temperament,

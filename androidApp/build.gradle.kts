@@ -51,8 +51,5 @@ dependencies {
     implementation("com.arkivanov.decompose:extensions-compose-jetpack:1.0.0-alpha-04")
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
     implementation("com.github.skydoves:landscapist-coil:$landscapistVersion")
-    implementation("com.github.skydoves:landscapist-placeholder:$landscapistVersion")
-    implementation("com.github.skydoves:landscapist-animation:$landscapistVersion")
     implementation("com.github.skydoves:landscapist-palette:$landscapistVersion")
-
 }

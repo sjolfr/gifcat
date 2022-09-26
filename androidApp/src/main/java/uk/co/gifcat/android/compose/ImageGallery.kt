@@ -26,7 +26,6 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.palette.PalettePlugin
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import uk.co.gifcat.components.imageGallery.ImageGallery
@@ -63,10 +62,6 @@ fun GalleryImage(imageUrl: String) {
             imageLoader = { LocalContext.current.imageLoader },
             imageOptions = ImageOptions(contentScale = ContentScale.FillWidth),
             component = rememberImageComponent {
-                +ShimmerPlugin(
-                    baseColor = Color.DarkGray,
-                    highlightColor = Color.LightGray,
-                )
                 +PalettePlugin {
                     composableScope.launch {
                        paletteSharedFlow.emit(it)

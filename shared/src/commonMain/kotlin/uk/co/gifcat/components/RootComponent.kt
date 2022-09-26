@@ -11,8 +11,8 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import uk.co.gifcat.components.Root.Child
 import uk.co.gifcat.components.breeds.BreedItem
-import uk.co.gifcat.components.imageGallery.ImageGalleryComponent
 import uk.co.gifcat.components.breeds.BreedListComponent
+import uk.co.gifcat.components.imageGallery.ImageGalleryComponent
 
 class RootComponent(
     componentContext: ComponentContext,

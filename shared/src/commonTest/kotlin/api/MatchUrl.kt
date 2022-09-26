@@ -11,7 +11,7 @@ object MatchUrl : Matcher<String> {
             URLBuilder(value)
                 .build()
             true
-        } catch (uRLParserException: URLParserException) {
+        } catch (_: URLParserException) {
             false
         }
 

@@ -16,7 +16,10 @@ data class ImageGalleryModel(
     val page: Int,
     val limit: Int,
 ) {
-    internal constructor(breedId: String, breedName: String) : this(breedId, false, breedName, listOf(), DefaultPage, DefaultLimit)
+    internal constructor(
+        breedId: String,
+        breedName: String
+    ) : this(breedId, false, breedName, listOf(), DefaultPage, DefaultLimit)
     constructor() : this("", false, "", listOf(), DefaultPage, DefaultLimit)
 
     private companion object {

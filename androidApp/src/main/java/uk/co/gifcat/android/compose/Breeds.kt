@@ -1,6 +1,6 @@
 package uk.co.gifcat.android.compose
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,43 +10,80 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.imageLoader
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.reduce
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.coil.CoilImage
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import uk.co.gifcat.android.R
 import uk.co.gifcat.android.compose.views.LoadingBox
 import uk.co.gifcat.components.breeds.BreedItem
 import uk.co.gifcat.components.breeds.BreedList
 import uk.co.gifcat.components.breeds.BreedsModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedsContent(component: BreedList, modifier: Modifier) {
     val model by component.model.subscribeAsState()
     val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    Column(modifier = modifier
-        .padding(8.dp)
-        .verticalScroll(rememberScrollState())
-    ) {
-        model.breeds.forEach {
-            BreedRow(it) {
-                coroutineScope.launch {
-                    component.onBreedSelected(it)
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CenterAlignedTopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = {
+//                    Image(painterResource(id = R.mipmap.ic_launcher), contentDescription = "app logo")
+                    Text(
+                        stringResource(R.string.app_name),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+            )
+        },
+    ) { innerPadding ->
+        Column(modifier = modifier
+            .padding(innerPadding)
+            .verticalScroll(rememberScrollState())
+        ) {
+            model.breeds.forEach {
+                BreedRow(it) {
+                    coroutineScope.launch {
+                        component.onBreedSelected(it)
+                    }
                 }
             }
-        }
-        if (model.isLoading) {
-            LoadingBox()
+            if (model.isLoading) {
+                LoadingBox()
+            }
         }
     }
 }
@@ -69,11 +106,22 @@ fun BreedRow(breed: BreedItem, onClick: () -> Unit) {
             style = MaterialTheme.typography.titleSmall,
             modifier = textModifier
         )
-        // image place holder, later to be replaced with an image
-        Box(modifier = Modifier
-            .background(MaterialTheme.colorScheme.secondary)
-            .fillMaxWidth()
-            .height(120.dp)
+        CoilImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            imageModel = breed.imageUrl,
+            imageLoader = { LocalContext.current.imageLoader },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center
+            ),
+            component = rememberImageComponent {
+                +ShimmerPlugin(
+                    baseColor = Color.DarkGray,
+                    highlightColor = Color.LightGray,
+                )
+            },
         )
         Text(
             breed.temperament,

@@ -17,8 +17,9 @@ object CatsApi {
     private const val EndOfClientErrorResponses = 499
     private const val StartOfServerErrorResponses = 500
     private const val EndOfServerErrorResponses = 599
+    private const val BreedIdLength = 4
 
-    private val client = HttpClient() {
+    private val client = HttpClient {
         install(ContentNegotiation) {
             json(
                 Json {
@@ -45,7 +46,7 @@ object CatsApi {
     }
 
     suspend fun getBreedImages(breedId: String, limit: Int = 3, page: Int = 0): List<Image> {
-        require(breedId.length == 4) {
+        require(breedId.length == BreedIdLength) {
             "the breed id must be four letters long"
         }
         val response: HttpResponse = client.get(
@@ -65,7 +66,7 @@ object CatsApi {
             )
             in serverErrorRange -> ApiErrors.errors.emit(
                 "Hey, currently are servers are experiencing some issues, " +
-                        "but we will be back up soon"
+                    "but we will be back up soon"
             )
         }
     }

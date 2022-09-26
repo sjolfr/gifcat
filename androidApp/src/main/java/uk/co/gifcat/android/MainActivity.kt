@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    RootContent(root = root, modifier = Modifier.fillMaxSize())
+                    RootContent(root = root)
                 }
             }
         }

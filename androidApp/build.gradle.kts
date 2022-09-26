@@ -53,5 +53,6 @@ dependencies {
     implementation("com.github.skydoves:landscapist-coil:$landscapistVersion")
     implementation("com.github.skydoves:landscapist-placeholder:$landscapistVersion")
     implementation("com.github.skydoves:landscapist-animation:$landscapistVersion")
+    implementation("com.github.skydoves:landscapist-palette:$landscapistVersion")
 
 }

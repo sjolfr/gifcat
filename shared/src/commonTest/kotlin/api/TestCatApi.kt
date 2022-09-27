@@ -20,23 +20,23 @@ class TestCatApi : BehaviorSpec() {
     init {
         given("a cat api") {
             `when`("when a request is made to get breeds") {
-                val response: List<Breed> = CatsApi.getBreeds(10, 0)
+                val response: List<Breed>? = CatsApi.getBreeds(10, 0)
                 then("the request should return ten results") {
-                    response.shouldHaveSize(10)
+                    response?.shouldHaveSize(10)
                 }
                 then("the request should return a list of breeds") {
-                    response.forEach {
+                    response?.forEach {
                         it.id.shouldNotBeEmpty()
                     }
                 }
             }
 
             `when`("a request is made to get images for abys") {
-                val response: List<Image> = CatsApi.getBreedImages("abys", 3, 0)
+                val response: List<Image>? = CatsApi.getBreedImages("abys", 3, 0)
                 then("the request should return three results") {
-                    response.shouldHaveSize(3)
+                    response?.shouldHaveSize(3)
                 }
-                response.forEach { image ->
+                response?.forEach { image ->
                     then("the ids should be nine characters long") {
                         image.id.shouldHaveLength(9)
                     }

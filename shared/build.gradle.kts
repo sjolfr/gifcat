@@ -9,9 +9,9 @@ plugins {
     id("kotlin-parcelize")
 }
 
-val coroutinesVersion = "1.6.4"
-val serializationVersion = "1.4.0"
-val ktorVersion = "2.1.1"
+val coroutinesVersion = "1.6.3"
+val serializationVersion = "1.3.3"
+val ktorVersion = "2.0.3"
 val kotestVersion = "5.4.2"
 
 kotlin {
@@ -37,7 +37,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-                implementation("io.github.aakira:napier:2.6.1")
+                implementation("co.touchlab:kermit:1.1.3")
                 api("com.arkivanov.decompose:decompose:1.0.0-alpha-04")
 
                 api("io.ktor:ktor-client-core:$ktorVersion")
@@ -60,7 +60,6 @@ kotlin {
         val androidTest by getting {
             dependencies {
                 implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-//                implementation("io.kotest:kotest-extensions-junitxml:5.4.2")
             }
         }
         val iosX64Main by getting

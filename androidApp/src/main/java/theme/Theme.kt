@@ -5,6 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import uk.co.gifcat.android.R
+
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -36,6 +43,7 @@ private val LightColors = lightColorScheme(
     surfaceTint = md_theme_light_surfaceTint,
 )
 
+
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -66,10 +74,32 @@ private val DarkColors = darkColorScheme(
     surfaceTint = md_theme_dark_surfaceTint,
 )
 
+private val abrilFatFace = FontFamily(
+    Font(R.font.abrilfatface_regular)
+)
+
+private object TypeScaleTokens {
+    val HeadlineLargeFont = abrilFatFace
+    val HeadlineLargeLineHeight = 40.0.sp
+    val HeadlineLargeSize = 32.sp
+    val HeadlineLargeTracking = 0.0.sp
+    val HeadlineLargeWeight = FontWeight.Normal
+    val HeadlineMediumFont = abrilFatFace
+    val HeadlineMediumLineHeight = 36.0.sp
+    val HeadlineMediumSize = 28.sp
+    val HeadlineMediumTracking = 0.0.sp
+    val HeadlineMediumWeight = FontWeight.Normal
+    val HeadlineSmallFont = abrilFatFace
+    val HeadlineSmallLineHeight = 32.0.sp
+    val HeadlineSmallSize = 24.sp
+    val HeadlineSmallTracking = 0.0.sp
+    val HeadlineSmallWeight = FontWeight.Normal
+}
+
 @Composable
 fun AppTheme(
-  useDarkTheme: Boolean = isSystemInDarkTheme(),
-  content: @Composable () -> Unit
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
 ) {
     val colors = if (!useDarkTheme) {
         LightColors
@@ -80,5 +110,28 @@ fun AppTheme(
     MaterialTheme(
         colorScheme = colors,
         content = content,
+        typography = MaterialTheme.typography.copy(
+            headlineSmall = TextStyle(
+                fontFamily = TypeScaleTokens.HeadlineSmallFont,
+                fontWeight = TypeScaleTokens.HeadlineSmallWeight,
+                fontSize = TypeScaleTokens.HeadlineSmallSize,
+                lineHeight = TypeScaleTokens.HeadlineSmallLineHeight,
+                letterSpacing = TypeScaleTokens.HeadlineSmallTracking,
+            ),
+            headlineMedium = TextStyle(
+                fontFamily = TypeScaleTokens.HeadlineMediumFont,
+                fontWeight = TypeScaleTokens.HeadlineMediumWeight,
+                fontSize = TypeScaleTokens.HeadlineMediumSize,
+                lineHeight = TypeScaleTokens.HeadlineMediumLineHeight,
+                letterSpacing = TypeScaleTokens.HeadlineMediumTracking,
+            ),
+            headlineLarge = TextStyle(
+                fontFamily = TypeScaleTokens.HeadlineLargeFont,
+                fontWeight = TypeScaleTokens.HeadlineLargeWeight,
+                fontSize = TypeScaleTokens.HeadlineLargeSize,
+                lineHeight = TypeScaleTokens.HeadlineLargeLineHeight,
+                letterSpacing = TypeScaleTokens.HeadlineLargeTracking,
+            ),
+        ),
     )
 }

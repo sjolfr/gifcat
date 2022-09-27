@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -34,10 +32,12 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.reduce
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uk.co.gifcat.android.R
-import uk.co.gifcat.android.compose.views.LoadingBox
+import uk.co.gifcat.android.compose.views.InfiniteList
 import uk.co.gifcat.components.breeds.BreedItem
 import uk.co.gifcat.components.breeds.BreedList
 import uk.co.gifcat.components.breeds.BreedsModel
@@ -46,7 +46,7 @@ import uk.co.gifcat.components.breeds.BreedsModel
 @Composable
 fun BreedsContent(component: BreedList, modifier: Modifier) {
     val model by component.model.subscribeAsState()
-    val coroutineScope = rememberCoroutineScope()
+    val composableScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -64,35 +64,44 @@ fun BreedsContent(component: BreedList, modifier: Modifier) {
             )
         },
     ) { innerPadding ->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .verticalScroll(rememberScrollState())
-        ) {
-            model.breeds.forEach {
-                BreedRow(it) {
-                    coroutineScope.launch {
-                        component.onBreedSelected(it)
+        Column(
+            modifier = Modifier.padding(innerPadding)) {
+            if (model.isLoading) {
+                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary, modifier = Modifier.fillMaxWidth())
+            }
+
+            InfiniteList(items = model.breeds,
+                onLoadMore = {
+                    composableScope.launch {
+                        withContext(Dispatchers.Main) {
+                            component.loadMore()
+                        }
+                    }
+                }) { breedItem ->
+                BreedRow(breedItem) {
+                    composableScope.launch {
+                        withContext(Dispatchers.Main) {
+                            component.onBreedSelected(breedItem)
+                        }
                     }
                 }
             }
-            if (model.isLoading) {
-                LoadingBox()
-            }
         }
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedRow(breed: BreedItem, onClick: () -> Unit) {
-    Card(
+    ElevatedCard(
         onClick = onClick,
         modifier = Modifier.padding(16.dp),
     ) {
         val textModifier = Modifier.padding(horizontal = 32.dp)
 
         Text(text = breed.name,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = textModifier
         )
         Text(

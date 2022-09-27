@@ -4,11 +4,11 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.reduce
-import com.arkivanov.essenty.lifecycle.doOnCreate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import uk.co.gifcat.api.CatsApi
+import uk.co.gifcat.api.models.Breed
 import uk.co.gifcat.extensions.coroutineScope
 
 internal class BreedListComponent(
@@ -19,12 +19,10 @@ internal class BreedListComponent(
     override val model: Value<BreedsModel> = _value
 
     init {
-        lifecycle.doOnCreate {
-            componentContext.coroutineScope(Dispatchers.Default + SupervisorJob())
-                .launch {
-                    loadCats()
-                }
-        }
+        componentContext.coroutineScope(Dispatchers.Default + SupervisorJob())
+            .launch {
+                loadCats()
+            }
     }
 
     private suspend fun loadCats() {
@@ -34,10 +32,21 @@ internal class BreedListComponent(
 
         val page = model.value.page
         val limit = model.value.limit
-        val apiBreeds = CatsApi.getBreeds(limit, page)
 
-        val mappedBreeds = apiBreeds.map {
-            BreedItem(it.name, it.origin, it.image.url, it.temperament, it.id)
+        val response = CatsApi.getBreeds(limit, page)
+
+        response?.let {
+            updateBreeds(it)
+        }
+
+        _value.reduce {
+            it.copy(isLoading = false)
+        }
+    }
+
+    private fun updateBreeds(apiBreeds: List<Breed>) {
+        val mappedBreeds = model.value.breeds + apiBreeds.map {
+            BreedItem(it.name, it.origin, it.temperament, it.image?.url, it.id)
         }
 
         if (mappedBreeds.isNotEmpty()) {
@@ -48,13 +57,11 @@ internal class BreedListComponent(
                 )
             }
         }
-
-        _value.reduce {
-            it.copy(isLoading = false)
-        }
     }
 
     override suspend fun onBreedSelected(breed: BreedItem) = onBreeItemSelected(breed)
 
-    override suspend fun loadMore() = loadCats()
+    override suspend fun loadMore() {
+        loadCats()
+    }
 }

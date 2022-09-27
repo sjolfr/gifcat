@@ -5,7 +5,6 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.reduce
 import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.lifecycle.doOnCreate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -29,12 +28,10 @@ internal class ImageGalleryComponent(
     init {
         backHandler.register(backCallback)
 
-        lifecycle.doOnCreate {
-            componentContext.coroutineScope(Dispatchers.Default + SupervisorJob())
-                .launch {
-                    loadCat()
-                }
-        }
+        componentContext.coroutineScope(Dispatchers.Default + SupervisorJob())
+            .launch {
+                loadCat()
+            }
     }
 
     private suspend fun loadCat() {
@@ -44,7 +41,18 @@ internal class ImageGalleryComponent(
 
         val page = model.value.page
         val limit = model.value.limit
-        val breedImages: List<Image> = CatsApi.getBreedImages(breedId, page = page, limit = limit)
+        val response: List<Image>? = CatsApi.getBreedImages(breedId, page = page, limit = limit)
+
+        response?.let {
+            updateImages(it)
+        }
+
+        _value.reduce {
+            it.copy(isLoading = false)
+        }
+    }
+
+    private fun updateImages(breedImages: List<Image>) {
         val mappedImages = breedImages.map {
             ImageModel(imageUrl = it.url, height = it.height, width = it.width)
         }
@@ -55,10 +63,6 @@ internal class ImageGalleryComponent(
                     images = mappedImages
                 )
             }
-        }
-
-        _value.reduce {
-            it.copy(isLoading = false)
         }
     }
 }

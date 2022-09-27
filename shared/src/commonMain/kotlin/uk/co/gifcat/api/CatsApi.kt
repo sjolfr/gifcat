@@ -1,7 +1,5 @@
 package uk.co.gifcat.api
 
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -9,11 +7,14 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import uk.co.gifcat.api.models.Breed
 import uk.co.gifcat.api.models.Image
+import co.touchlab.kermit.Logger as KLogger
 
 object CatsApi {
     private const val BaseUrl = "https://api.thecatapi.com/v1/"
@@ -23,6 +24,8 @@ object CatsApi {
     private const val StartOfServerErrorResponses = 500
     private const val EndOfServerErrorResponses = 599
     private const val BreedIdLength = 4
+    private const val ApiKeyHeaderKey = "x-api-key"
+    private const val ApiKeyHeaderValue = "live_wfEkv0YW5zYpFoYEtZUu7e8apkDznpfsTI7u7jvdtPXoVzfnE2KJ8k0UpKgySzev"
 
     private val client = HttpClient {
         install(ContentNegotiation) {
@@ -30,20 +33,23 @@ object CatsApi {
                 Json {
                     prettyPrint = true
                     isLenient = true
+                    ignoreUnknownKeys = true
                 }
             )
         }
         install(Logging) {
-            logger = object: Logger {
+            logger = object : Logger {
                 override fun log(message: String) {
-                    Napier.v("HTTP Client", null, message)
+                    KLogger.d("HTTP Client") {
+                        message
+                    }
                 }
             }
-            level = LogLevel.HEADERS
-        }.also { Napier.base(DebugAntilog()) }
+            level = LogLevel.ALL
+        }
     }
 
-    suspend fun getBreeds(limit: Int = 10, page: Int = 0): List<Breed> {
+    suspend fun getBreeds(limit: Int = 10, page: Int = 0): List<Breed>? {
         require(limit > 0) {
             "limit must be greater than zero"
         }
@@ -51,22 +57,35 @@ object CatsApi {
             "page cannot be negative"
         }
 
-        val response: HttpResponse = client.get(
-            BaseUrl + "breeds?limit=$limit&page=$page"
+        return getRequest<List<Breed>>(
+            url = BaseUrl + "breeds?limit=$limit&page=$page",
+            action = "loading the cat breeds"
         )
-        checkStatusCode(response.status.value, "loading the cat breeds")
-        return response.body()
     }
 
-    suspend fun getBreedImages(breedId: String, limit: Int = 3, page: Int = 0): List<Image> {
+    suspend fun getBreedImages(breedId: String, limit: Int = 3, page: Int = 0): List<Image>? {
         require(breedId.length == BreedIdLength) {
             "the breed id must be four letters long"
         }
-        val response: HttpResponse = client.get(
-            BaseUrl + "images/search?mime_types=png,jpg&page=$page&limit=$limit&breed_ids=$breedId"
+
+        return getRequest<List<Image>>(
+            url = BaseUrl + "images/search?mime_types=png,jpg&page=$page&limit=$limit&breed_ids=$breedId",
+            action = "loading the images for $breedId"
         )
-        checkStatusCode(response.status.value, "loading the images for $breedId")
-        return response.body()
+    }
+
+    private suspend inline fun <reified T> getRequest(url: String, action: String): T? {
+        val response: HttpResponse = client.get(url) {
+            header(ApiKeyHeaderKey, ApiKeyHeaderValue)
+        }
+
+        checkStatusCode(response.status.value, action)
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            null
+        }
     }
 
     private suspend fun checkStatusCode(statusCode: Int, action: String) {

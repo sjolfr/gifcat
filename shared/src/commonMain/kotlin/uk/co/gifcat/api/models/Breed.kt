@@ -41,7 +41,7 @@ data class Breed(
     val lap: Long? = null,
 
     @SerialName("alt_names")
-    val altNames: String,
+    val altNames: String? = null,
 
     val adaptability: Long,
 
@@ -87,12 +87,17 @@ data class Breed(
     val shortLegs: Long,
 
     @SerialName("wikipedia_url")
-    val wikipediaURL: String,
+    val wikipediaURL: String? = null,
 
     val hypoallergenic: Long,
 
     @SerialName("reference_image_id")
-    val referenceImageID: String,
+    val referenceImageID: String? = null,
 
-    val image: Image
+    val image: Image? = null,
+
+    @SerialName("cat_friendly")
+    val catFriendly: Long? = null,
+
+    val bidability: Long? = null
 )

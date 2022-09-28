@@ -61,19 +61,19 @@ internal class BreedListComponent(
 
     private fun mappedAttributes(it: Breed): Map<String, Long> {
         return mapOf(
-            Pair("adaptability", it.adaptability),
-            Pair("affectionLevel", it.affectionLevel),
-            Pair("childFriendly", it.childFriendly),
-            Pair("dogFriendly", it.dogFriendly),
-            Pair("energyLevel", it.energyLevel),
-            Pair("grooming", it.grooming),
-            Pair("healthIssues", it.healthIssues),
-            Pair("intelligence", it.intelligence),
-            Pair("sheddingLevel", it.sheddingLevel),
-            Pair("socialNeeds", it.socialNeeds),
-            Pair("strangerFriendly", it.strangerFriendly),
-            Pair("vocalisation", it.vocalisation),
-            Pair("experimental", it.experimental),
+            Pair("Adaptability", it.adaptability),
+            Pair("Affection Level", it.affectionLevel),
+            Pair("Child Friendly", it.childFriendly),
+            Pair("Dog Friendly", it.dogFriendly),
+            Pair("Energy Level", it.energyLevel),
+            Pair("Grooming", it.grooming),
+            Pair("Health Issues", it.healthIssues),
+            Pair("Intelligence", it.intelligence),
+            Pair("Shedding Level", it.sheddingLevel),
+            Pair("Social Needs", it.socialNeeds),
+            Pair("Stranger Friendly", it.strangerFriendly),
+            Pair("Vocalisation", it.vocalisation),
+            Pair("Experimental", it.experimental),
         )
     }
 

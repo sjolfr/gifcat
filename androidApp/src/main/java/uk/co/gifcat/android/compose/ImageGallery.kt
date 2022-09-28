@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
@@ -28,7 +27,6 @@ import coil.imageLoader
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.skydoves.landscapist.ImageOptions
@@ -42,7 +40,6 @@ import uk.co.gifcat.components.imageGallery.ImageGallery
 import uk.co.gifcat.components.imageGallery.ImageGalleryModel
 import uk.co.gifcat.components.imageGallery.ImageModel
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ImageGallery(component: ImageGallery, modifier: Modifier) {
     val model by component.model.subscribeAsState()
@@ -57,14 +54,12 @@ fun ImageGallery(component: ImageGallery, modifier: Modifier) {
                 verticalArrangement = Arrangement.spacedBy(32.dp)) {
                 Text(
                     text = stringResource(R.string.image_gallery_loading_text, model.breedName),
-                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary)
             }
         } else {
             HorizontalPager(
-                modifier = modifier,
                 count = model.images.count(),
                 state = pagerState,
                 verticalAlignment = Alignment.CenterVertically,

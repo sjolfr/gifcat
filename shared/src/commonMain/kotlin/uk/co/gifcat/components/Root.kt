@@ -6,6 +6,7 @@ import uk.co.gifcat.components.breeds.BreedList
 import uk.co.gifcat.components.imageGallery.ImageGallery
 
 interface Root {
+    val apiError: Value<String>
     val childStack: Value<ChildStack<*, Child>>
 
     sealed class Child {

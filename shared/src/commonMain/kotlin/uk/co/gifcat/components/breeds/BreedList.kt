@@ -6,7 +6,7 @@ interface BreedList {
     val model: Value<BreedsModel>
 
     suspend fun onBreedSelected(breed: BreedItem)
-    suspend fun loadMore()
+    suspend fun load()
 }
 
 data class BreedsModel(

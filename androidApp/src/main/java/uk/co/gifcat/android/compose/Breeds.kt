@@ -5,25 +5,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.imageLoader
@@ -36,62 +28,40 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import uk.co.gifcat.android.R
 import uk.co.gifcat.android.compose.views.InfiniteList
 import uk.co.gifcat.components.breeds.BreedItem
 import uk.co.gifcat.components.breeds.BreedList
 import uk.co.gifcat.components.breeds.BreedsModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedsContent(component: BreedList, modifier: Modifier) {
     val model by component.model.subscribeAsState()
     val composableScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            CenterAlignedTopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = {
-                    Text(
-                        stringResource(R.string.app_name),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding)) {
-            if (model.isLoading) {
-                LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary, modifier = Modifier.fillMaxWidth())
-            }
+    Column(modifier) {
+        if (model.isLoading) {
+            LinearProgressIndicator(color = MaterialTheme.colorScheme.secondary, modifier = Modifier.fillMaxWidth())
+        }
 
-            InfiniteList(items = model.breeds,
-                onLoadMore = {
-                    composableScope.launch {
-                        withContext(Dispatchers.Main) {
-                            component.loadMore()
-                        }
+        InfiniteList(items = model.breeds,
+            onLoadMore = {
+                composableScope.launch {
+                    withContext(Dispatchers.Main) {
+                        component.load()
                     }
-                }) { breedItem ->
-                BreedRow(breedItem) {
-                    composableScope.launch {
-                        withContext(Dispatchers.Main) {
-                            component.onBreedSelected(breedItem)
-                        }
+                }
+            }) { breedItem ->
+            BreedRow(breedItem) {
+                composableScope.launch {
+                    withContext(Dispatchers.Main) {
+                        component.onBreedSelected(breedItem)
                     }
                 }
             }
         }
-
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedRow(breed: BreedItem, onClick: () -> Unit) {
     ElevatedCard(
@@ -145,7 +115,7 @@ val fakeBreedsComponent = object : BreedList {
         println(breed)
     }
 
-    override suspend fun loadMore() {
+    override suspend fun load() {
         model.reduce {
             it.copy(isLoading = true)
         }

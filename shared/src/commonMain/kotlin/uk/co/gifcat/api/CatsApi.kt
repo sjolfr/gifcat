@@ -2,6 +2,7 @@ package uk.co.gifcat.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -12,20 +13,24 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import uk.co.gifcat.api.errors.ApiErrors
+import uk.co.gifcat.api.errors.BadRequest
+import uk.co.gifcat.api.errors.NoInternetConnection
+import uk.co.gifcat.api.errors.ServerError
 import uk.co.gifcat.api.models.Breed
 import uk.co.gifcat.api.models.Image
 import co.touchlab.kermit.Logger as KLogger
 
 object CatsApi {
     private const val BaseUrl = "https://api.thecatapi.com/v1/"
-
     private const val StartOfClientErrorResponses = 400
     private const val EndOfClientErrorResponses = 499
     private const val StartOfServerErrorResponses = 500
     private const val EndOfServerErrorResponses = 599
     private const val BreedIdLength = 4
     private const val ApiKeyHeaderKey = "x-api-key"
-    private const val ApiKeyHeaderValue = "live_wfEkv0YW5zYpFoYEtZUu7e8apkDznpfsTI7u7jvdtPXoVzfnE2KJ8k0UpKgySzev"
+    private const val ApiKeyHeaderValue = "live_wfEkv0YW5zYpFoYEtZUu7e8apkDznpfsTI7u7jvdtPXoVznE2KJ8k0UpKgySzev"
+    private const val loggerKey = "HTTP Client"
 
     private val client = HttpClient {
         install(ContentNegotiation) {
@@ -40,7 +45,7 @@ object CatsApi {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    KLogger.d("HTTP Client") {
+                    KLogger.d(loggerKey) {
                         message
                     }
                 }
@@ -75,16 +80,27 @@ object CatsApi {
     }
 
     private suspend inline fun <reified T> getRequest(url: String, action: String): T? {
-        val response: HttpResponse = client.get(url) {
-            header(ApiKeyHeaderKey, ApiKeyHeaderValue)
+        val response: HttpResponse? = try {
+             client.get(url) {
+                header(ApiKeyHeaderKey, ApiKeyHeaderValue)
+            }
+        } catch (responseException: ResponseException) {
+            KLogger.e(loggerKey, responseException)
+            null
+        } catch (exception: Exception) {
+            KLogger.e(loggerKey, exception)
+            ApiErrors.errors.emit(NoInternetConnection())
+            null
         }
 
-        checkStatusCode(response.status.value, action)
+        return response?.let {
+            checkStatusCode(response.status.value, action)
 
-        return if (response.status.isSuccess()) {
-            response.body()
-        } else {
-            null
+            if (response.status.isSuccess()) {
+                response.body()
+            } else {
+                null
+            }
         }
     }
 
@@ -94,11 +110,11 @@ object CatsApi {
 
         when (statusCode) {
             in clientErrorRange -> ApiErrors.errors.emit(
-                "Sorry, we had trouble $action"
+                BadRequest("Sorry, we had trouble $action")
             )
             in serverErrorRange -> ApiErrors.errors.emit(
-                "Hey, currently are servers are experiencing some issues, " +
-                    "but we will be back up soon"
+                ServerError("Hey, currently are servers are experiencing some issues, " +
+                    "but we will be back up soon")
             )
         }
     }

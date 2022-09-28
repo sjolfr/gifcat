@@ -61,7 +61,7 @@ internal class BreedListComponent(
 
     override suspend fun onBreedSelected(breed: BreedItem) = onBreeItemSelected(breed)
 
-    override suspend fun loadMore() {
+    override suspend fun load() {
         loadCats()
     }
 }

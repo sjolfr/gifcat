@@ -8,25 +8,3 @@ interface BreedList {
     suspend fun onBreedSelected(breed: BreedItem)
     suspend fun load()
 }
-
-data class BreedsModel(
-    internal val limit: Int,
-    internal val page: Int,
-    val isLoading: Boolean,
-    val breeds: List<BreedItem>
-) {
-    constructor() : this(DefaultLimit, DefaultPage, false, listOf())
-
-    private companion object {
-        const val DefaultLimit = 10
-        const val DefaultPage = 0
-    }
-}
-
-data class BreedItem(
-    val name: String,
-    val origin: String,
-    val temperament: String,
-    val imageUrl: String?,
-    internal val id: String
-)

@@ -13,7 +13,7 @@ import uk.co.gifcat.extensions.coroutineScope
 
 internal class BreedListComponent(
     componentContext: ComponentContext,
-    private val onBreeItemSelected: (BreedItem) -> Unit
+    private val onBreedItemSelected: (BreedItem) -> Unit
 ) : BreedList, ComponentContext by componentContext {
     private val _value = MutableValue(BreedsModel())
     override val model: Value<BreedsModel> = _value
@@ -46,7 +46,7 @@ internal class BreedListComponent(
 
     private fun updateBreeds(apiBreeds: List<Breed>) {
         val mappedBreeds = model.value.breeds + apiBreeds.map {
-            BreedItem(it.name, it.origin, it.temperament, it.image?.url, it.id)
+            BreedItem(it.name, it.origin, it.temperament, it.image?.url, it.id, mappedAttributes(it))
         }
 
         if (mappedBreeds.isNotEmpty()) {
@@ -59,7 +59,25 @@ internal class BreedListComponent(
         }
     }
 
-    override suspend fun onBreedSelected(breed: BreedItem) = onBreeItemSelected(breed)
+    private fun mappedAttributes(it: Breed): Map<String, Long> {
+        return mapOf(
+            Pair("adaptability", it.adaptability),
+            Pair("affectionLevel", it.affectionLevel),
+            Pair("childFriendly", it.childFriendly),
+            Pair("dogFriendly", it.dogFriendly),
+            Pair("energyLevel", it.energyLevel),
+            Pair("grooming", it.grooming),
+            Pair("healthIssues", it.healthIssues),
+            Pair("intelligence", it.intelligence),
+            Pair("sheddingLevel", it.sheddingLevel),
+            Pair("socialNeeds", it.socialNeeds),
+            Pair("strangerFriendly", it.strangerFriendly),
+            Pair("vocalisation", it.vocalisation),
+            Pair("experimental", it.experimental),
+        )
+    }
+
+    override suspend fun onBreedSelected(breed: BreedItem) = onBreedItemSelected(breed)
 
     override suspend fun load() {
         loadCats()

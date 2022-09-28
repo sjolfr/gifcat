@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">GifCat</string>
     <string name="image_gallery_loading_text">Getting %1$s photos</string>
+    <string name="expand_less">expand less</string>
+    <string name="expand_more">expand more</string>
 </resources>

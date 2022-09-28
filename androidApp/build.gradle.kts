@@ -57,4 +57,5 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
     implementation("com.github.skydoves:landscapist-coil:$landscapistVersion")
     implementation("com.github.skydoves:landscapist-palette:$landscapistVersion")
+    implementation("androidx.compose.material:material-icons-extended:$jetpackComposeVersion")
 }

@@ -16,7 +16,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ScaleFactor
+import androidx.compose.ui.layout.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +31,7 @@ import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
@@ -39,6 +43,7 @@ import uk.co.gifcat.android.R
 import uk.co.gifcat.components.imageGallery.ImageGallery
 import uk.co.gifcat.components.imageGallery.ImageGalleryModel
 import uk.co.gifcat.components.imageGallery.ImageModel
+import kotlin.math.absoluteValue
 
 @Composable
 fun ImageGallery(component: ImageGallery, modifier: Modifier) {
@@ -64,19 +69,31 @@ fun ImageGallery(component: ImageGallery, modifier: Modifier) {
                 state = pagerState,
                 verticalAlignment = Alignment.CenterVertically,
             ) { page ->
-                GalleryImage(model.images[page].imageUrl)
+                GalleryImage(model.images[page].imageUrl, modifier = Modifier
+                    .graphicsLayer {
+                        val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+
+                        lerp(
+                            start = ScaleFactor(0.85f, 0.85f),
+                            stop = ScaleFactor(1f, 1f),
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        ).also { scale ->
+                            scaleX = scale.scaleX
+                            scaleY = scale.scaleY
+                        }
+                    })
             }
         }
     }
 }
 
 @Composable
-fun GalleryImage(imageUrl: String) {
+fun GalleryImage(imageUrl: String, modifier: Modifier) {
     val paletteSharedFlow = MutableSharedFlow<Palette?>()
     val palette: Palette? by paletteSharedFlow.collectAsState(null)
     val composableScope = rememberCoroutineScope()
 
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .background(galleryBackground(palette))) {
         CoilImage(
             imageModel = imageUrl,
@@ -85,7 +102,7 @@ fun GalleryImage(imageUrl: String) {
             component = rememberImageComponent {
                 +PalettePlugin {
                     composableScope.launch {
-                       paletteSharedFlow.emit(it)
+                        paletteSharedFlow.emit(it)
                     }
                 }
             },

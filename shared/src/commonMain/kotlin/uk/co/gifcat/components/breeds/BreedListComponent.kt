@@ -73,7 +73,6 @@ internal class BreedListComponent(
             Pair("Social Needs", it.socialNeeds),
             Pair("Stranger Friendly", it.strangerFriendly),
             Pair("Vocalisation", it.vocalisation),
-            Pair("Experimental", it.experimental),
         )
     }
 

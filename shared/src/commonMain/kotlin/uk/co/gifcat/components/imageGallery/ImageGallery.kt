@@ -24,7 +24,7 @@ data class ImageGalleryModel(
 
     private companion object {
         const val DefaultPage = 0
-        const val DefaultLimit = 3
+        const val DefaultLimit = 10
     }
 }
 

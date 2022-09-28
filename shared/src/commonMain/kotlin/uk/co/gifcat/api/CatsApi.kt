@@ -79,9 +79,11 @@ object CatsApi {
         )
     }
 
+    // suppressing too generic exception caught, see more: https://youtrack.jetbrains.com/issue/KTOR-2630
+    @Suppress("TooGenericExceptionCaught")
     private suspend inline fun <reified T> getRequest(url: String, action: String): T? {
         val response: HttpResponse? = try {
-             client.get(url) {
+            client.get(url) {
                 header(ApiKeyHeaderKey, ApiKeyHeaderValue)
             }
         } catch (responseException: ResponseException) {
@@ -113,8 +115,10 @@ object CatsApi {
                 BadRequest("Sorry, we had trouble $action")
             )
             in serverErrorRange -> ApiErrors.errors.emit(
-                ServerError("Hey, currently are servers are experiencing some issues, " +
-                    "but we will be back up soon")
+                ServerError(
+                    "Hey, currently are servers are experiencing some issues, " +
+                        "but we will be back up soon"
+                )
             )
         }
     }

@@ -66,6 +66,7 @@ Moko resources could be used to localise the text in the shared layer.
 - hook up ktlint and detekt to git commit pre hook
 - reporting of unit/integration tests
 - reporting of cyclomatic complexity via detekt
+- documentation generation using dokka or similar
 
 ## Misc
 - api key not hidden, deemed it to be low risk information

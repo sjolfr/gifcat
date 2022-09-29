@@ -9,9 +9,15 @@ Powered by [The Cat Api](https://developers.thecatapi.com)
 - expandable cards to show attributes for each breed
 - on tap of the card the app navigates to the image gallery screen
 
+![breeds](https://raw.githubusercontent.com/sjolfr/gifcat/main/docs/breeds.png?token=GHSAT0AAAAAABYJTLRHZ4LJND3YMQ6E6CZIYZVTQNA)
+
+![breeds expanded](https://raw.githubusercontent.com/sjolfr/gifcat/main/docs/breeds-expanded.png?token=GHSAT0AAAAAABYJTLRGW7BUSIDDM6SKMKXEYZVTPFA)
+
 ### Image Gallery
 - horizontal paged image gallery displaying up to 10 images of the selected breed
 - uses the color pallette of the loaded image to set the background of the page, this background color is different in light and dark modes
+
+![gallery](https://raw.githubusercontent.com/sjolfr/gifcat/main/docs/gallery.png?token=GHSAT0AAAAAABYJTLRGLG5CVXFAFNXHSO4AYZVTQOQ)
 
 ## Libraries/Frameworks/Other
 

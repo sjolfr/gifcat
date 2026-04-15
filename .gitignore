@@ -8,3 +8,6 @@ captures
 .cxx
 local.properties
 xcuserdata
+
+# graphify knowledge graph output (generated)
+graphify-out/
